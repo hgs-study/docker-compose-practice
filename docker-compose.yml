@@ -1,0 +1,26 @@
+version: "3.2"
+services:
+  mysql_container:
+    container_name: mysql_hgstudy
+    image: mysql:5.7
+    environment:
+      MYSQL_USER: hgs
+      MYSQL_DATABASE: hgs_database
+      MYSQL_PASSWORD: 1234
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - 3306:3306
+
+  application:
+    container_name: application_hgstudy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_hgstudy:3306/hgs_database?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+      SPRING_DATASOURCE_USERNAME: hgs
+      SPRING_DATASOURCE_PASSWORD: 1234
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql_container
